@@ -36,6 +36,8 @@ services:
       - ./dags:/opt/airflow/dags
       - ./logs:/opt/airflow/logs
       - ./scripts:/opt/airflow/scripts
+      - ./sql:/opt/airflow/sql
+      - ./data:/opt/airflow/data
     command: bash /opt/airflow/scripts/start_airflow.sh
 
 volumes:
