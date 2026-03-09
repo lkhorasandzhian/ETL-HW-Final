@@ -1,4 +1,3 @@
-apache-airflow
 pandas
 pymongo
 faker
