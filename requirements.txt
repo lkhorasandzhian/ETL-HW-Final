@@ -1,0 +1,5 @@
+apache-airflow
+pandas
+pymongo
+faker
+psycopg2-binary
