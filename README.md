@@ -45,6 +45,34 @@
 Все компоненты системы (**MongoDB, PostgreSQL и Apache Airflow**) развёрнуты
 в контейнерах **Docker Compose**.
 
+## Launch Manual
+Рассмотрим поэтапную работу с проектом:
+1) Для начала требуется запустить скрипт `setup_project.sh`. Он запускает контейнеры, проверяет готовность PostgreSQL и MongoDB, генерирует данные для нереляционной БД и создает пустые таблицы для реляционной БД:  
+```sh
+bash scripts/setup_project.sh
+``` 
+2) Теперь запускаем ETL-пайплайн `etl_pipeline.py` либо вручную, либо в Airflow UI, тем самым выполнив репликацию данных из MongoDB в PostgreSQL:
+```sh
+docker exec airflow python /opt/airflow/scripts/etl_pipeline.py
+```
+3) Сформировав данные в реляционной БД, запустим скрипт `create_marts.sql` для создания аналитических витрин:  
+```sh
+docker exec -i postgres psql -U levon -d etl_db < sql/create_marts.sql
+```
+4) После создания витрин их можно обновлять с помощью запуска DAG `refresh_marts.py` (опять-таки либо вручную, либо через Airflow UI):
+```sh
+docker exec airflow python /opt/airflow/scripts/refresh_marts.py
+```
+5) Для завершения работы с контейнерами необходимо ввести следующую команду:
+```sh
+docker compose down
+```
+> [!TIP]
+> При желании можно удалить ранее сгенерированные данные, добавив флаг -v:
+```sh
+docker compose down -v
+```
+
 ## Repository Description
 В репозитории настроено окружение **Apache Airflow** с использованием **Docker Compose**.  
 
@@ -95,7 +123,7 @@ URI: mongodb://mongo:27017/
 Database: etl_mongo
 
 ## Results
-Подведём итоги выполнения задания с использованием **MongoDB, PostgreSQL и Apache Airflow**:
+Подведем итоги выполнения задания с использованием **MongoDB, PostgreSQL и Apache Airflow**:
 - сгенерированы тестовые данные и загружены в MongoDB;
 - реализована ETL-репликация MongoDB -> PostgreSQL;
 - создана реляционная модель данных в схеме `etl`;
