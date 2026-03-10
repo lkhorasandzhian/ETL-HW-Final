@@ -1,7 +1,7 @@
 CREATE SCHEMA IF NOT EXISTS etl;
 
 -- ========================================================
--- 1.UserSessions, сессии пользователей
+-- 1. UserSessions, сессии пользователей
 -- ========================================================
 CREATE TABLE IF NOT EXISTS etl.user_sessions (
     session_id VARCHAR(50) PRIMARY KEY,
